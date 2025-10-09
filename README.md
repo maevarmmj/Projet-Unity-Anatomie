@@ -9,25 +9,26 @@ Développer une **application de Réalité Augmentée (AR)** sur **tablette Sams
 - Permettre à l’utilisateur de **afficher/masquer les couches** via une interface simple et interactive.
 - Intégrer un **mini-jeu pédagogique** autour de l’anatomie humaine.
 - (Bonus) Rendre l’application compatible avec le **squelette physique “Carlos”** de la salle E-Santé.
+- Rendu : 16/01/2026
 
 ---
 
 ## 👥 Équipe (6 personnes)
 
-| Rôle | Missions principales |
-|------|-----------------------|
-| **Chef de projet / Intégrateur** | Planification, gestion Git/GitLab, coordination des sprints, suivi des livrables, présentation. |
-| **Développeur AR (Lead)** | Intégration AR Foundation / ARCore, pipeline caméra, placement et affichage des modèles 3D, build Android. |
-| **Ingénieur Pose / ML** | Estimation de pose en temps réel (YOLO-Pose, BlazePose), extraction des keypoints, mapping vers le modèle 3D. |
-| **Artiste 3D / Rigger** | Recherche et préparation de modèles anatomiques (os, muscles, organes, peau), rigging, LOD, optimisation. |
-| **Développeur UI / Mini-jeu** | Interface utilisateur, gestion des couches (toggle), mini-jeu pédagogique, transitions, scoring. |
-| **QA / Performance / Documentation** | Tests fonctionnels et de performance, stabilité, FPS, documentation technique et utilisateur. |
+|  Missions principales |
+|-----------------------|
+| Planification, gestion Git/GitLab, coordination des sprints, suivi des livrables, présentation. |
+| Intégration AR Foundation / ARCore, pipeline caméra, placement et affichage des modèles 3D, build Android. |
+| Estimation de pose en temps réel (YOLO-Pose, BlazePose), extraction des keypoints, mapping vers le modèle 3D. |
+| Recherche et préparation de modèles anatomiques (os, muscles, organes, peau), rigging, LOD, optimisation. |
+| Interface utilisateur, gestion des couches (toggle), mini-jeu pédagogique, transitions, scoring. |
+| Tests fonctionnels et de performance, stabilité, FPS, documentation technique et utilisateur. |
 
 ---
 
 ## 🗓️ Phases de développement
 
-### Phase 0 — Kickoff & Préparation (2–4 jours)
+### Phase 0 — Kickoff & Préparation 
 **Objectifs :**
 - Définir les livrables, répartir les rôles et installer l’environnement.
 - Créer le dépôt Git, la structure du projet et le backlog.
@@ -40,15 +41,15 @@ Développer une **application de Réalité Augmentée (AR)** sur **tablette Sams
 
 ---
 
-### Phase 1 — Prototype rapide (POC) (1–2 semaines)
+### Phase 1 — Prototype rapide (POC) 
 **Objectif :**
 Obtenir une démonstration minimale : caméra AR + squelette 3D approximativement aligné à la personne.
 
 **Sous-objectifs :**
 - Configurer Unity (LTS) avec **AR Foundation** et **ARCore XR Plugin**.
-- Afficher le **flux caméra** sur tablette.
-- Implémenter la **détection de pose** (YOLO-pose / BlazePose).
-- Importer un modèle 3D simple (squelette) dans Unity.
+- Afficher le **flux caméra**.
+- Implémenter la **détection de pose** (YOLO-pose).
+- Importer un modèle 3D simple (squelette, Peau, Muscles, Oragnes etc) dans Unity.
 - Mapper grossièrement les keypoints 2D → modèle 3D.
 - Première démo interne sur tablette.
 
@@ -57,14 +58,14 @@ Obtenir une démonstration minimale : caméra AR + squelette 3D approximativemen
 
 ---
 
-### Phase 2 — Amélioration du tracking et du retargeting (2–3 semaines)
+### Phase 2 — Amélioration du tracking et du retargeting 
 **Objectif :**
 Stabiliser le suivi et faire correspondre correctement la pose humaine au modèle 3D riggé.
 
 **Sous-objectifs :**
 - Lissage des keypoints (filtre Kalman / moyenne glissante).
 - Gestion des occlusions (confidence threshold).
-- Retargeting IK : appliquer les rotations/positions sur le rig.
+- Retargeting IK : appliquer les rotations/positions (du corps) sur le rig.
 - Ajustement de l’échelle selon la hauteur estimée de l’utilisateur.
 - Découpage du modèle en **couches anatomiques** indépendantes (os, muscles, organes, peau).
 
@@ -73,7 +74,7 @@ Stabiliser le suivi et faire correspondre correctement la pose humaine au modèl
 
 ---
 
-### Phase 3 — Interface utilisateur et gestion des couches (1–2 semaines)
+### Phase 3 — Interface utilisateur et gestion des couches 
 **Objectif :**
 Créer une interface fluide et tactile permettant d’afficher/masquer les couches anatomiques.
 
@@ -91,7 +92,7 @@ Créer une interface fluide et tactile permettant d’afficher/masquer les couch
 
 ---
 
-### Phase 4 — Mini-jeu pédagogique (1–2 semaines)
+### Phase 4 — Mini-jeu pédagogique 
 **Objectif :**
 Créer un mini-jeu pour tester les connaissances anatomiques.
 
@@ -111,7 +112,7 @@ Créer un mini-jeu pour tester les connaissances anatomiques.
 
 ---
 
-### Phase 5 — Mode “Carlos” (1 semaine)
+### Phase 5 — Mode “Carlos” 
 **Objectif :**
 Faire fonctionner le modèle sur le squelette physique présent dans la salle E-Santé.
 
@@ -125,33 +126,14 @@ Faire fonctionner le modèle sur le squelette physique présent dans la salle E-
 
 ---
 
-### Phase 6 — Optimisation, tests et packaging (1–2 semaines)
-**Objectif :**
-Préparer la version finale stable et fluide.
-
-**Sous-objectifs :**
-- Optimiser performances (LOD, draw calls, textures, mémoire).
-- Tests sur plusieurs utilisateurs (latence, stabilité).
-- Génération du build final `.apk`.
-- Rédaction de la documentation finale et de la présentation vidéo.
-
-**Livrable :**
-> APK final + rapport technique + vidéo de démonstration.
-
----
-
 ## 🧩 Organisation du travail en parallèle
 
-| Personne | Tâches parallèles possibles | Période |
-|-----------|-----------------------------|----------|
-| **Dev AR** | Setup Unity + caméra AR + intégration 3D | dès semaine 1 |
-| **Ingénieur Pose** | Pose detection (YOLO/BlazePose), script keypoints | dès semaine 1 |
-| **Artist 3D** | Recherche modèles, rigging, textures, couches | dès semaine 1 |
-| **Dev UI** | Maquettes UI + menu couches | dès semaine 1 |
-| **QA** | Plan de tests + check build tablette | dès semaine 1 |
-| **Chef de projet** | Gestion Git, suivi sprints, planification | continu |
-
-> ⚙️ Dès la fin de la semaine 2 : intégration entre tracking, modèles 3D et UI.
+|  Tâches parallèles possibles | 
+|-----------------------------|
+| Setup Unity + caméra AR + intégration 3D | 
+| Pose detection (YOLO/BlazePose), script keypoints |
+| Recherche modèles, rigging, textures, couches |
+| Maquettes UI + menu couches | 
 
 ---
 
@@ -203,19 +185,6 @@ Préparer la version finale stable et fluide.
 
 ---
 
-## 📅 Exemple de timeline (6 semaines)
-
-| Semaine | Phase principale | État |
-|----------|------------------|------|
-| 0 | Kickoff, setup, planning | 🟢 |
-| 1–2 | Prototype (caméra, pose, modèle 3D, UI base) | 🟡 |
-| 3 | Tracking + couches anatomiques | 🟡 |
-| 4 | Mini-jeu + amélioration tracking | 🟡 |
-| 5 | Mode “Carlos” + finitions | 🟡 |
-| 6 | Tests finaux, build, doc, présentation | 🔵 |
-
----
-
 ## 🧠 Pour aller plus loin
 
 - Ajouter des infos contextuelles sur chaque organe (labels interactifs).
@@ -237,8 +206,7 @@ Préparer la version finale stable et fluide.
 
 ## 💬 Auteurs
 Projet réalisé par :  
-**[Noms de l’équipe]**  
-Master / Licence [Nom du programme] – [Année universitaire]
-
+**LaDreamTeam**  
+ESEO - 2025-2026
 ---
 
