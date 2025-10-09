@@ -9,19 +9,19 @@ Développer une **application de Réalité Augmentée (AR)** sur **tablette Sams
 - Permettre à l’utilisateur de **afficher/masquer les couches** via une interface simple et interactive.
 - Intégrer un **mini-jeu pédagogique** autour de l’anatomie humaine.
 - (Bonus) Rendre l’application compatible avec le **squelette physique “Carlos”** de la salle E-Santé.
-- Rendu : 16/01/2026
+- Rendu : **16/01/2026**
 
 ---
 
 ## 👥 Équipe (6 personnes)
 
-|  Missions principales |
-|-----------------------|
+|  Missions principales | Personnes |
+|-----------------------|-----------|
 | Planification, gestion Git/GitLab, coordination des sprints, suivi des livrables, présentation. |
-| Intégration AR Foundation / ARCore, pipeline caméra, placement et affichage des modèles 3D, build Android. |
-| Estimation de pose en temps réel (YOLO-Pose, BlazePose), extraction des keypoints, mapping vers le modèle 3D. |
-| Recherche et préparation de modèles anatomiques (os, muscles, organes, peau), rigging, LOD, optimisation. |
-| Interface utilisateur, gestion des couches (toggle), mini-jeu pédagogique, transitions, scoring. |
+| Intégration AR Foundation / ARCore, pipeline caméra, placement et affichage des modèles 3D, build Android. | Corentin
+| Estimation de pose en temps réel (YOLO-Pose, BlazePose), extraction des keypoints, mapping vers le modèle 3D. | Anthony, Tom
+| Recherche et préparation de modèles anatomiques (os, muscles, organes, peau), rigging, LOD, optimisation, recherche de textes à afficher| Maeva, Ines
+| Interface utilisateur, gestion des couches (toggle), mini-jeu pédagogique, transitions, scoring. | Mathis
 | Tests fonctionnels et de performance, stabilité, FPS, documentation technique et utilisateur. |
 
 ---
