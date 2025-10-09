@@ -181,7 +181,7 @@ Faire fonctionner le modèle sur le squelette physique présent dans la salle E-
 - **Dépôt Git complet** (code + modèles + README).
 - **Rapport technique** (architecture, choix technos, résultats, tests).
 - **Vidéo de démonstration** (1–2 minutes).
-- **Présentation orale / slides** pour soutenance.
+- **Manuel utilisateur**
 
 ---
 
