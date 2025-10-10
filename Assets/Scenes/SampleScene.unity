@@ -8226,9 +8226,10 @@ MonoBehaviour:
   boneColor: {r: 0, g: 1, b: 0.2, a: 0.9}
   boneWidth: 2
   emaAlpha: 0.35
-  confThreshold: 0.02
+  confThreshold: 0.15
   orientationMode: 0
   bonePrefab: {fileID: 1833031097837223189, guid: 51e2a92137b014e1187e827798801698, type: 3}
+  assumePreserveAspect: 1
 --- !u!1001 &891726464977617767
 PrefabInstance:
   m_ObjectHideFlags: 0

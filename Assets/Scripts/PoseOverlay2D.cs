@@ -22,15 +22,26 @@ public class PoseOverlay2D : MonoBehaviour
     public float confThreshold = 0.2f;
 
     // ordre COCO (17 points) – paires de segments
+    // Indices COCO (YOLOv8-pose) :
+    // 0:nose, 1:left eye, 2:right eye, 3:left ear, 4:right ear,
+    // 5:left shoulder, 6:right shoulder, 7:left elbow, 8:right elbow, 9:left wrist, 10:right wrist,
+    // 11:left hip, 12:right hip, 13:left knee, 14:right knee, 15:left ankle, 16:right ankle
     private readonly (int a, int b)[] bones = new (int, int)[]
     {
-        (5,7),(7,9),      // bras gauche
-        (6,8),(8,10),     // bras droit
-        (11,13),(13,15),  // jambe gauche
-        (12,14),(14,16),  // jambe droite
-        (5,6), (11,12),   // épaules, hanches
-        (5,11),(6,12)     // diagonales du torse
+        // TÊTE
+        (0,1), (0,2),   // nez → yeux
+        (1,3), (2,4),   // yeux → oreilles
+        (0,5), (0,6),   // nez → épaules (lien vers le torse)
+        // BRAS
+        (5,7), (7,9),
+        (6,8), (8,10),
+        // JAMBes
+        (11,13), (13,15),
+        (12,14), (14,16),
+        // TORSE
+        (5,6), (11,12), (5,11), (6,12)
     };
+
 
     private RectTransform[] joints;
     private Vector2[] ema; // positions lissées en pixels canvas

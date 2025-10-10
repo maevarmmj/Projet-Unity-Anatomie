@@ -249,98 +249,83 @@ public class Recuperation_Points_yolo : MonoBehaviour
     // --------- RESEAU (BACKGROUND THREAD) ----------
     void NetLoop()
     {
-        TcpClient client = null;
-
-        // Tentative de connexion (retry)
-        while (running && client == null)
+        while (running)
         {
+            TcpClient client = null;
             try
             {
-                client = new TcpClient();
-                client.NoDelay = true;
-                client.Connect(host, port);
-            }
-            catch
-            {
-                client = null;
-                Thread.Sleep(500);
-            }
-        }
-        if (!running || client == null)
-        {
-            Debug.LogWarning("❌ Impossible de se connecter au serveur Python.");
-            return;
-        }
-        Debug.Log("✅ Connecté au serveur Python.");
-
-        try
-        {
-            using (client)
-            using (var stream = client.GetStream())
-            using (var bw = new BinaryWriter(stream))
-            using (var br = new BinaryReader(stream))
-            {
-                while (running)
+                // -- Connexion avec retry --
+                while (running && client == null)
                 {
-                    // Récupérer la dernière frame prête (si aucune, on attend un peu)
-                    byte[] jpgToSend = null;
-                    lock (frameLock)
+                    try
                     {
-                        if (nextFrameJpg != null)
+                        client = new TcpClient();
+                        client.NoDelay = true;
+                        client.Connect(host, port);
+                    }
+                    catch
+                    {
+                        client = null;
+                        Thread.Sleep(500); // backoff
+                    }
+                }
+                if (!running || client == null) break;
+                Debug.Log("✅ Connecté au serveur Python.");
+
+                using (client)
+                using (var stream = client.GetStream())
+                using (var bw = new BinaryWriter(stream))
+                using (var br = new BinaryReader(stream))
+                {
+                    while (running)
+                    {
+                        // Prendre la dernière frame dispo (sinon patienter)
+                        byte[] jpgToSend = null;
+                        lock (frameLock)
                         {
-                            jpgToSend = nextFrameJpg;
-                            nextFrameJpg = null; // consommée
+                            if (nextFrameJpg != null) { jpgToSend = nextFrameJpg; nextFrameJpg = null; }
+                        }
+                        if (jpgToSend == null) { Thread.Sleep(1); continue; }
+
+                        // Envoyer taille + payload
+                        bw.Write(System.Net.IPAddress.HostToNetworkOrder(jpgToSend.Length));
+                        bw.Write(jpgToSend);
+
+                        // Lire taille + JSON (robuste)
+                        int jsonSize = ReadInt32BE(br);
+                        if (jsonSize <= 0 || jsonSize > 1_000_000)
+                            throw new EndOfStreamException("invalid size");
+
+                        byte[] jsonBytes = ReadExact(br, jsonSize);
+                        if (jsonBytes == null)
+                            throw new EndOfStreamException("payload closed");
+
+                        string json = System.Text.Encoding.UTF8.GetString(jsonBytes);
+
+                        var wrapper = JsonUtility.FromJson<Wrapper>("{\"data\":" + json + "}");
+                        if (wrapper?.data != null)
+                        {
+                            srcW = wrapper.data.w;
+                            srcH = wrapper.data.h;
+                            var pts = new List<Vector3>();
+                            if (wrapper.data.points != null)
+                                foreach (var p in wrapper.data.points)
+                                    pts.Add(new Vector3(p.x, p.y, p.c));
+
+                            latestKps = pts;
+                            lastPointCount = pts.Count;
                         }
                     }
-                    if (jpgToSend == null)
-                    {
-                        Thread.Sleep(1);
-                        continue;
-                    }
-
-                    // 1) envoyer taille + jpeg
-                    bw.Write(System.Net.IPAddress.HostToNetworkOrder(jpgToSend.Length));
-                    bw.Write(jpgToSend);
-
-                    // 2) recevoir taille + json
-                    // 3️⃣ Réception taille + JSON (robuste)
-                    int jsonSize = ReadInt32BE(br);             // ← au lieu de ReadInt32 direct
-                    if (jsonSize <= 0 || jsonSize > 1_000_000) throw new EndOfStreamException("invalid size");
-
-                    byte[] jsonBytes = ReadExact(br, jsonSize); // ← au lieu de br.ReadBytes(jsonSize)
-                    if (jsonBytes == null) throw new EndOfStreamException("payload closed");
-
-                    string json = System.Text.Encoding.UTF8.GetString(jsonBytes);
-
-
-                    // 3) parser la réponse (AUCUNE API Unity ici)
-                    var wrapper = JsonUtility.FromJson<Wrapper>("{\"data\":" + json + "}");
-                    if (wrapper != null && wrapper.data != null)
-                    {
-                        srcW = wrapper.data.w;
-                        srcH = wrapper.data.h;
-
-                        var pts = new List<Vector3>();
-                        if (wrapper.data.points != null)
-                        {
-                            foreach (var p in wrapper.data.points)
-                                pts.Add(new Vector3(p.x, p.y, p.c));
-                        }
-
-                        latestKps = pts;
-                        lastPointCount = pts.Count; // pour ton debug
-                        if (debugLogs && (dbgCounter++ % 30 == 0))
-                            Debug.Log($"[Pose] points reçus: {lastPointCount}");
-                    }
-
                 }
             }
-        }
-        catch (Exception e)
-        {
-            Debug.LogWarning("[TCP] arrêt: " + e.Message);
+            catch (Exception e)
+            {
+                Debug.LogWarning("[TCP] arrêt: " + e.Message + " → reconnexion…");
+                Thread.Sleep(300); // petit backoff puis on retente
+            }
         }
     }
+
 
     // --- API publique : récupérer les keypoints normalisés (viewport 0..1) ---
     public bool TryGetKeypointsViewport(out Vector2[] vp, float confThreshold = 0.2f)
