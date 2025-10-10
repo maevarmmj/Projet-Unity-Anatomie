@@ -43,7 +43,7 @@ while cap.isOpened():
         if cv2.waitKey(1) & 0xFF == ord("q"):
             break
             
-        time.sleep(0.01) # Petite pause
+        time.sleep(0.1) # Pause plus longue - envoi toutes les 100ms (~10 FPS)
     else:
         break
 
