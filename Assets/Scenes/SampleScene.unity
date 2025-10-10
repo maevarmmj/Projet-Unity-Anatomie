@@ -7572,10 +7572,39 @@ MonoBehaviour:
   targetWidth: 640
   targetHeight: 480
   jpegQuality: 70
-  sendFps: 15
+  sendFps: 30
   forceHorizontalMirror: 0
   debugLogs: 1
   lastPointCount: 0
+  latestHandsLeft: []
+  latestHandsRight: []
+  latestFeet:
+    left:
+      ankle:
+        x: 0
+        y: 0
+        c: 0
+      heel:
+        x: 0
+        y: 0
+        c: 0
+      bigtoe:
+        x: 0
+        y: 0
+        c: 0
+    right:
+      ankle:
+        x: 0
+        y: 0
+        c: 0
+      heel:
+        x: 0
+        y: 0
+        c: 0
+      bigtoe:
+        x: 0
+        y: 0
+        c: 0
 --- !u!114 &2083221391
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8172,6 +8201,8 @@ GameObject:
   - component: {fileID: 2124138705}
   - component: {fileID: 2124138707}
   - component: {fileID: 2124138706}
+  - component: {fileID: 2124138708}
+  - component: {fileID: 2124138709}
   m_Layer: 5
   m_Name: PoseOverlay
   m_TagString: Untagged
@@ -8230,6 +8261,56 @@ MonoBehaviour:
   orientationMode: 0
   bonePrefab: {fileID: 1833031097837223189, guid: 51e2a92137b014e1187e827798801698, type: 3}
   assumePreserveAspect: 1
+--- !u!114 &2124138708
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2124138704}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b849a5db9ce144a5af577f49763f419, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FeetOverlay2D
+  client: {fileID: 2083221390}
+  preview: {fileID: 2083221391}
+  canvasRect: {fileID: 964111343}
+  jointPrefab: {fileID: 9038504988316997103, guid: 2074accb36e26428c9d82873664a78f4, type: 3}
+  bonePrefab: {fileID: 1833031097837223189, guid: 51e2a92137b014e1187e827798801698, type: 3}
+  jointScale: 10
+  boneWidth: 2
+  leftFootColor: {r: 1, g: 0.5490196, b: 0, a: 1}
+  rightFootColor: {r: 1, g: 0.4117647, b: 0.7058824, a: 1}
+  emaAlpha: 0.35
+  confThreshold: 0
+  assumePreserveAspect: 1
+  orientationMode: 0
+--- !u!114 &2124138709
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2124138704}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 817c63bccae314698adba0330085cf73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HandsOverlay2D
+  client: {fileID: 2083221390}
+  preview: {fileID: 2083221391}
+  canvasRect: {fileID: 964111343}
+  jointPrefab: {fileID: 9038504988316997103, guid: 2074accb36e26428c9d82873664a78f4, type: 3}
+  bonePrefab: {fileID: 1833031097837223189, guid: 51e2a92137b014e1187e827798801698, type: 3}
+  jointScale: 10
+  boneWidth: 2
+  leftHandColor: {r: 1, g: 0.5490196, b: 0, a: 1}
+  rightHandColor: {r: 1, g: 0.4117647, b: 0.7058824, a: 1}
+  emaAlpha: 0.35
+  confThreshold: 0
+  assumePreserveAspect: 1
+  orientationMode: 0
 --- !u!1001 &891726464977617767
 PrefabInstance:
   m_ObjectHideFlags: 0

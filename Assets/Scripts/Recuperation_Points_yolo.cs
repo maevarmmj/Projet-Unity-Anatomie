@@ -12,8 +12,8 @@ using Debug = UnityEngine.Debug;
 public class Recuperation_Points_yolo : MonoBehaviour
 {
     [Header("Python Server (Local)")]
-    public string pythonExePath = @"C:\Path\to\python.exe";   // ← adapte
-    public string pythonScriptPath = @"C:\Path\to\Yolo.py";   // ← adapte
+    public string pythonExePath = "/Users/tomroyer/Desktop/Eseo/I3/S9/UNITY/Projet/Anatomie/.venv/bin/python3.11";   // ← adapte
+    public string pythonScriptPath = "/Users/tomroyer/Desktop/Eseo/I3/S9/UNITY/Projet/Anatomie/Yolo.py";   // ← adapte
     public string host = "127.0.0.1";
     public int port = 5053;
 
@@ -50,6 +50,10 @@ public class Recuperation_Points_yolo : MonoBehaviour
     public bool debugLogs = true;
     private int dbgCounter = 0;
     public int lastPointCount = 0;
+     // juste après tes champs srcW/srcH
+    public int SrcW => srcW;
+    public int SrcH => srcH;
+
 
     public bool TryGetSourceSize(out int w, out int h)
     {
@@ -305,16 +309,22 @@ public class Recuperation_Points_yolo : MonoBehaviour
                         var wrapper = JsonUtility.FromJson<Wrapper>("{\"data\":" + json + "}");
                         if (wrapper?.data != null)
                         {
-                            srcW = wrapper.data.w;
-                            srcH = wrapper.data.h;
-                            var pts = new List<Vector3>();
-                            if (wrapper.data.points != null)
-                                foreach (var p in wrapper.data.points)
-                                    pts.Add(new Vector3(p.x, p.y, p.c));
+                            srcW = wrapper.data.w; srcH = wrapper.data.h;
 
-                            latestKps = pts;
-                            lastPointCount = pts.Count;
+                            // corps (17)
+                            var bodyPts = new List<Vector3>();
+                            if (wrapper.data.body17 != null)
+                                foreach (var p in wrapper.data.body17) bodyPts.Add(new Vector3(p.x, p.y, p.c));
+                            latestKps = bodyPts;  // ← garde ton API actuelle pour l’overlay corps
+
+                            // expose mains/pieds via des propriétés (optionnel)
+                            latestHandsLeft  = wrapper.data.hands?.left;
+                            latestHandsRight = wrapper.data.hands?.right;
+                            latestFeet       = wrapper.data.feet;
+
+                            lastPointCount = bodyPts.Count;
                         }
+
                     }
                 }
             }
@@ -347,21 +357,39 @@ public class Recuperation_Points_yolo : MonoBehaviour
         vp = arr;
         return true;
     }
-
     [Serializable] class Wrapper { public Data data; }
 
     [Serializable] class Data
     {
-        public int w;
-        public int h;
-        public Point[] points;
+        public int w; public int h;
+        public Point[] body17;   // peut être null
+        public Hands hands;      // peut être null
+        public Feet feet;        // peut être null
     }
 
-    [Serializable] class Point
+    [Serializable] public class Point { public float x, y, c; }
+
+    [Serializable] public class Hands
     {
-        public float x;
-        public float y;
-        public float c; // confidence
+        public Point[] left;
+        public Point[] right;
     }
+
+    [Serializable] public class FeetSide
+    {
+        public Point ankle;
+        public Point heel;
+        public Point bigtoe;
+    }
+
+    [Serializable] public class Feet
+    {
+        public FeetSide left;
+        public FeetSide right;
+    }
+
+    public volatile Point[] latestHandsLeft;
+    public volatile Point[] latestHandsRight;
+    public volatile Feet latestFeet;
 
 }
