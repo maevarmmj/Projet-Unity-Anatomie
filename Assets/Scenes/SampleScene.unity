@@ -536,6 +536,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1760703bbd54c04488a8d10600262ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!20 &152195092 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 2512387469002778331, guid: 48cb3fb68c91eb94999fd99957eb0cae, type: 3}
+  m_PrefabInstance: {fileID: 331264285}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &173779100
 GameObject:
   m_ObjectHideFlags: 0
@@ -1117,6 +1122,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2512387469002778308, guid: 48cb3fb68c91eb94999fd99957eb0cae, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -1.5
+      objectReference: {fileID: 0}
     - target: {fileID: 2512387470319625105, guid: 48cb3fb68c91eb94999fd99957eb0cae, type: 3}
       propertyPath: m_OccludeARHitsWith2DObjects
       value: 1
@@ -3625,9 +3634,9 @@ Canvas:
   m_GameObject: {fileID: 964111339}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
-  m_Camera: {fileID: 0}
-  m_PlaneDistance: 100
+  m_RenderMode: 1
+  m_Camera: {fileID: 152195092}
+  m_PlaneDistance: 1
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
@@ -3653,6 +3662,7 @@ RectTransform:
   m_Children:
   - {fileID: 2083221389}
   - {fileID: 2124138705}
+  - {fileID: 1465681965}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -5943,6 +5953,64 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1448137672}
   m_CullTransparentMesh: 1
+--- !u!1 &1465681964
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1465681965}
+  - component: {fileID: 1465681966}
+  m_Layer: 0
+  m_Name: SkeletonRenderer3D
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1465681965
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1465681964}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 964111343}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1465681966
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1465681964}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2458f9b4d2db74e9caf0148bc486001a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SkeletonRenderer3D
+  client: {fileID: 2083221390}
+  videoPreview: {fileID: 2083221391}
+  mainCamera: {fileID: 152195092}
+  jointPrefab: {fileID: 8310224155778166481, guid: 23edcdd4a061c43d2b28c8677dec791f, type: 3}
+  jointScale: 0.03
+  bodyColor: {r: 0, g: 1, b: 0, a: 1}
+  leftHandColor: {r: 0.2, g: 0.8, b: 1, a: 1}
+  rightHandColor: {r: 1, g: 0.6, b: 0.2, a: 1}
+  depthScale: 0.5
+  confidenceThreshold: 0
 --- !u!1 &1478354563
 GameObject:
   m_ObjectHideFlags: 0
@@ -7576,35 +7644,10 @@ MonoBehaviour:
   forceHorizontalMirror: 0
   debugLogs: 1
   lastPointCount: 0
-  latestHandsLeft: []
-  latestHandsRight: []
-  latestFeet:
-    left:
-      ankle:
-        x: 0
-        y: 0
-        c: 0
-      heel:
-        x: 0
-        y: 0
-        c: 0
-      bigtoe:
-        x: 0
-        y: 0
-        c: 0
-    right:
-      ankle:
-        x: 0
-        y: 0
-        c: 0
-      heel:
-        x: 0
-        y: 0
-        c: 0
-      bigtoe:
-        x: 0
-        y: 0
-        c: 0
+  latestBody3D: []
+  latestHands3D:
+    left: []
+    right: []
 --- !u!114 &2083221391
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8209,7 +8252,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2124138705
 RectTransform:
   m_ObjectHideFlags: 0
@@ -8249,18 +8292,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fede2f49ceb404b16a26e24e550ad41e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PoseOverlay2D
-  client: {fileID: 2083221390}
-  preview: {fileID: 2083221391}
-  canvasRect: {fileID: 964111343}
-  jointPrefab: {fileID: 9038504988316997103, guid: 2074accb36e26428c9d82873664a78f4, type: 3}
-  jointScale: 10
-  boneColor: {r: 0, g: 1, b: 0.2, a: 0.9}
-  boneWidth: 2
-  emaAlpha: 0.35
-  confThreshold: 0.15
-  orientationMode: 0
-  bonePrefab: {fileID: 1833031097837223189, guid: 51e2a92137b014e1187e827798801698, type: 3}
-  assumePreserveAspect: 1
 --- !u!114 &2124138708
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8273,19 +8304,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b849a5db9ce144a5af577f49763f419, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FeetOverlay2D
-  client: {fileID: 2083221390}
-  preview: {fileID: 2083221391}
-  canvasRect: {fileID: 964111343}
-  jointPrefab: {fileID: 9038504988316997103, guid: 2074accb36e26428c9d82873664a78f4, type: 3}
-  bonePrefab: {fileID: 1833031097837223189, guid: 51e2a92137b014e1187e827798801698, type: 3}
-  jointScale: 10
-  boneWidth: 2
-  leftFootColor: {r: 1, g: 0.5490196, b: 0, a: 1}
-  rightFootColor: {r: 1, g: 0.4117647, b: 0.7058824, a: 1}
-  emaAlpha: 0.35
-  confThreshold: 0
-  assumePreserveAspect: 1
-  orientationMode: 0
 --- !u!114 &2124138709
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8298,19 +8316,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 817c63bccae314698adba0330085cf73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HandsOverlay2D
-  client: {fileID: 2083221390}
-  preview: {fileID: 2083221391}
-  canvasRect: {fileID: 964111343}
-  jointPrefab: {fileID: 9038504988316997103, guid: 2074accb36e26428c9d82873664a78f4, type: 3}
-  bonePrefab: {fileID: 1833031097837223189, guid: 51e2a92137b014e1187e827798801698, type: 3}
-  jointScale: 10
-  boneWidth: 2
-  leftHandColor: {r: 1, g: 0.5490196, b: 0, a: 1}
-  rightHandColor: {r: 1, g: 0.4117647, b: 0.7058824, a: 1}
-  emaAlpha: 0.35
-  confThreshold: 0
-  assumePreserveAspect: 1
-  orientationMode: 0
 --- !u!1001 &891726464977617767
 PrefabInstance:
   m_ObjectHideFlags: 0

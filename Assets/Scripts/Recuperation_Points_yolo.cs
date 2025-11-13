@@ -41,18 +41,18 @@ public class Recuperation_Points_yolo : MonoBehaviour
     private readonly object frameLock = new object();
     private byte[] nextFrameJpg = null;      // écrit par capture (main thread), lu par thread réseau
 
-    // Résultats
-    private volatile List<Vector3> latestKps = new List<Vector3>(); // (x,y,conf)
+    // --- MODIFIÉ : Résultats 3D ---
     private volatile int srcW, srcH;
-    // Ajoute ce champ en haut de la classe si tu veux forcer un miroir horizontal (optionnel)
     public bool forceHorizontalMirror = false;
-
     public bool debugLogs = true;
-    private int dbgCounter = 0;
     public int lastPointCount = 0;
-     // juste après tes champs srcW/srcH
     public int SrcW => srcW;
     public int SrcH => srcH;
+
+    // NOUVELLES VARIABLES pour stocker les données 3D
+    public volatile Point3D[] latestBody3D;
+    public volatile Hands3D latestHands3D;
+    // --- FIN MODIFIÉ ---
 
 
     public bool TryGetSourceSize(out int w, out int h)
@@ -63,7 +63,6 @@ public class Recuperation_Points_yolo : MonoBehaviour
 
     int ReadInt32BE(BinaryReader br)
     {
-        // Lit 4 octets big-endian avec contrôle
         byte[] b = ReadExact(br, 4);
         if (b == null || b.Length < 4) throw new EndOfStreamException("size header");
         return (b[0] << 24) | (b[1] << 16) | (b[2] << 8) | b[3];
@@ -136,7 +135,6 @@ public class Recuperation_Points_yolo : MonoBehaviour
 
         if (webcam != null && webcam.isPlaying) webcam.Stop();
 
-        // Libération RenderTexture propre
         if (rt != null)
         {
             if (RenderTexture.active == rt) RenderTexture.active = null;
@@ -164,91 +162,67 @@ public class Recuperation_Points_yolo : MonoBehaviour
     // --------- CAPTURE (MAIN THREAD) ----------
     System.Collections.IEnumerator CaptureLoop()
     {
-        // On envoie à cadence sendFps, mais on capte en fin de frame pour ReadPixels
         float interval = 1f / Mathf.Max(1f, sendFps);
         float nextSend = 0f;
 
         while (running)
         {
-            // Attendre la fin de la frame pour garantir que la texture caméra est prête
             yield return new WaitForEndOfFrame();
-
             if (webcam == null || !webcam.isPlaying || webcam.width <= 16 || webcam.height <= 16)
                 continue;
 
             if (Time.unscaledTime < nextSend)
                 continue;
 
-            // (Ré)allocation si nécessaire
             if (rt == null || rtW != webcam.width || rtH != webcam.height)
             {
-                // Libérer l'ancien RT si besoin (en s'assurant qu'il n'est pas actif)
                 if (rt != null)
                 {
                     if (RenderTexture.active == rt) RenderTexture.active = null;
                     rt.Release();
                     Destroy(rt);
                 }
-
                 rtW = webcam.width;
                 rtH = webcam.height;
                 rt = new RenderTexture(rtW, rtH, 0, RenderTextureFormat.ARGB32);
                 rt.Create();
 
-                // Ajuster la Texture2D de capture si la taille change
                 if (captureTex == null || captureTex.width != rtW || captureTex.height != rtH)
                     captureTex = new Texture2D(rtW, rtH, TextureFormat.RGB24, false);
             }
 
-            // Copier la WebCam dans le RT persistant
             Graphics.Blit(webcam, rt);
-
-            // Lire les pixels du RT dans la Texture2D (sur le thread principal)
             var prev = RenderTexture.active;
             RenderTexture.active = rt;
             captureTex.ReadPixels(new Rect(0, 0, rt.width, rt.height), 0, 0);
             captureTex.Apply(false);
-            RenderTexture.active = prev; // très important
-
-            // Encoder en JPG (toujours sur main thread)
+            RenderTexture.active = prev;
             byte[] jpg = captureTex.EncodeToJPG(jpegQuality);
 
-            // Déposer la frame pour le thread réseau
             lock (frameLock)
             {
-                nextFrameJpg = jpg; // on écrase l’ancienne si non lue, ok pour POC
+                nextFrameJpg = jpg;
             }
-
             nextSend = Time.unscaledTime + interval;
         }
     }
 
     void Update()
     {
-        ApplyPreviewOrientation(); // ajuste l’affichage dans l’Editor
+        ApplyPreviewOrientation();
     }
 
-    // Adapter l'affichage du RawImage en fonction des propriétés de la webcam
     void ApplyPreviewOrientation()
     {
         if (webcam == null || !webcam.isPlaying) return;
-
-        // Rotation (0, 90, 180, 270)
         preview.rectTransform.localEulerAngles = new Vector3(0, 0, -webcam.videoRotationAngle);
-
-        // Flip vertical automatique selon le driver
         Rect uv = preview.uvRect;
         bool vMirrored = webcam.videoVerticallyMirrored;
         uv = vMirrored ? new Rect(0, 1, 1, -1) : new Rect(0, 0, 1, 1);
-
-        // (Optionnel) miroir horizontal si l'image est inversée gauche/droite
         if (forceHorizontalMirror)
             uv = new Rect(1, uv.y, -1, uv.height);
-
         preview.uvRect = uv;
     }
-
-
 
     // --------- RESEAU (BACKGROUND THREAD) ----------
     void NetLoop()
@@ -258,7 +232,6 @@ public class Recuperation_Points_yolo : MonoBehaviour
             TcpClient client = null;
             try
             {
-                // -- Connexion avec retry --
                 while (running && client == null)
                 {
                     try
@@ -274,7 +247,7 @@ public class Recuperation_Points_yolo : MonoBehaviour
                     }
                 }
                 if (!running || client == null) break;
-                Debug.Log("✅ Connecté au serveur Python.");
+                Debug.Log("✅ Connecté au serveur Python 3D."); // Modifié
 
                 using (client)
                 using (var stream = client.GetStream())
@@ -283,7 +256,6 @@ public class Recuperation_Points_yolo : MonoBehaviour
                 {
                     while (running)
                     {
-                        // Prendre la dernière frame dispo (sinon patienter)
                         byte[] jpgToSend = null;
                         lock (frameLock)
                         {
@@ -291,11 +263,9 @@ public class Recuperation_Points_yolo : MonoBehaviour
                         }
                         if (jpgToSend == null) { Thread.Sleep(1); continue; }
 
-                        // Envoyer taille + payload
                         bw.Write(System.Net.IPAddress.HostToNetworkOrder(jpgToSend.Length));
                         bw.Write(jpgToSend);
 
-                        // Lire taille + JSON (robuste)
                         int jsonSize = ReadInt32BE(br);
                         if (jsonSize <= 0 || jsonSize > 1_000_000)
                             throw new EndOfStreamException("invalid size");
@@ -306,25 +276,20 @@ public class Recuperation_Points_yolo : MonoBehaviour
 
                         string json = System.Text.Encoding.UTF8.GetString(jsonBytes);
 
+                        // --- MODIFIÉ : Décodage du nouveau JSON 3D ---
                         var wrapper = JsonUtility.FromJson<Wrapper>("{\"data\":" + json + "}");
                         if (wrapper?.data != null)
                         {
                             srcW = wrapper.data.w; srcH = wrapper.data.h;
 
-                            // corps (17)
-                            var bodyPts = new List<Vector3>();
-                            if (wrapper.data.body17 != null)
-                                foreach (var p in wrapper.data.body17) bodyPts.Add(new Vector3(p.x, p.y, p.c));
-                            latestKps = bodyPts;  // ← garde ton API actuelle pour l’overlay corps
+                            // Stocke les nouvelles données 3D
+                            latestBody3D = wrapper.data.body3d;
+                            latestHands3D = wrapper.data.hands;
+                            
 
-                            // expose mains/pieds via des propriétés (optionnel)
-                            latestHandsLeft  = wrapper.data.hands?.left;
-                            latestHandsRight = wrapper.data.hands?.right;
-                            latestFeet       = wrapper.data.feet;
-
-                            lastPointCount = bodyPts.Count;
+                            lastPointCount = (latestBody3D != null) ? latestBody3D.Length : 0;
                         }
-
+                        // --- FIN MODIFIÉ ---
                     }
                 }
             }
@@ -337,59 +302,36 @@ public class Recuperation_Points_yolo : MonoBehaviour
     }
 
 
-    // --- API publique : récupérer les keypoints normalisés (viewport 0..1) ---
-    public bool TryGetKeypointsViewport(out Vector2[] vp, float confThreshold = 0.2f)
-    {
-        vp = null;
-        var pts = latestKps; int w = srcW, h = srcH;
-        if (pts == null || pts.Count == 0 || w <= 0 || h <= 0) return false;
+    // --- MODIFIÉ : API publique pour 2D supprimée ---
+    // L'ancienne fonction TryGetKeypointsViewport a été supprimée
+    // car elle était liée à l'overlay 2D et aux données YOLO (body17).
+    // Nous la remplacerons par un script 3D.
 
-        int n = Mathf.Min(17, pts.Count);
-        var arr = new Vector2[n];
-        for (int i = 0; i < n; i++)
-        {
-            var p = pts[i];
-            if (p.z < confThreshold) { arr[i] = new Vector2(-1, -1); continue; }
-            float nx = Mathf.Clamp01(p.x / w);
-            float ny = 1f - Mathf.Clamp01(p.y / h); // flip Y pour Unity
-            arr[i] = new Vector2(nx, ny);
-        }
-        vp = arr;
-        return true;
-    }
+
+    // --- MODIFIÉ : Classes de données C# pour correspondre au JSON 3D ---
     [Serializable] class Wrapper { public Data data; }
 
-    [Serializable] class Data
+    [Serializable]
+    class Data
     {
         public int w; public int h;
-        public Point[] body17;   // peut être null
-        public Hands hands;      // peut être null
-        public Feet feet;        // peut être null
+        // "body17" et "feet" ont disparu
+        public Point3D[] body3d;   // NOUVEAU: 33 points du corps 3D
+        public Hands3D hands;      // MODIFIÉ: utilise Point3D
     }
 
-    [Serializable] public class Point { public float x, y, c; }
-
-    [Serializable] public class Hands
+    [Serializable]
+    public class Point3D // MODIFIÉ: Ancien "Point"
     {
-        public Point[] left;
-        public Point[] right;
+        public float x, y, z, c; // Ajout de 'z'
     }
 
-    [Serializable] public class FeetSide
+    [Serializable]
+    public class Hands3D // MODIFIÉ: Ancien "Hands"
     {
-        public Point ankle;
-        public Point heel;
-        public Point bigtoe;
+        public Point3D[] left;
+        public Point3D[] right;
     }
 
-    [Serializable] public class Feet
-    {
-        public FeetSide left;
-        public FeetSide right;
-    }
-
-    public volatile Point[] latestHandsLeft;
-    public volatile Point[] latestHandsRight;
-    public volatile Feet latestFeet;
-
+    // Les classes "Feet" et "FeetSide" ont été supprimées.
 }
