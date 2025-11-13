@@ -4,7 +4,7 @@
 PlayerSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 28
-  productGUID: a2db635e78ebf46fdb4465383dc2ac40
+  productGUID: 2d66e4d1d515049bfa7624f6b96044b5
   AndroidProfiler: 0
   AndroidFilterTouchesWhenObscured: 0
   AndroidEnableSustainedPerformanceMode: 0
@@ -13,7 +13,7 @@ PlayerSettings:
   useOnDemandResources: 0
   accelerometerFrequency: 60
   companyName: DefaultCompany
-  productName: Anatomie_Unity
+  productName: Projet-Anatomie-2
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
@@ -846,14 +846,14 @@ PlayerSettings:
   editorAssembliesCompatibilityLevel: 1
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
-  metroPackageName: Anatomie_Unity
+  metroPackageName: Projet-Anatomie-2
   metroPackageVersion: 
   metroCertificatePath: 
   metroCertificatePassword: 
   metroCertificateSubject: 
   metroCertificateIssuer: 
   metroCertificateNotAfter: 0000000000000000
-  metroApplicationDescription: Anatomie_Unity
+  metroApplicationDescription: Projet-Anatomie-2
   wsaImages: {}
   metroTileShortName: 
   metroTileShowName: 0
@@ -924,10 +924,10 @@ PlayerSettings:
   captureStartupLogs: {}
   activeInputHandler: 1
   windowsGamepadBackendHint: 0
-  cloudProjectId: e80e1b02-6d11-41b3-85d8-9733fef40bde
+  cloudProjectId: f69683dc-5d19-4cb4-8434-f39af67fd4b9
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: Anatomie_Unity 2025-10-09_17-44-14
+  projectName: Projet-Anatomie-2
   organizationId: tomroyer21
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
