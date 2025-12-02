@@ -531,7 +531,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 331264285}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e1760703bbd54c04488a8d10600262ab, type: 3}
   m_Name: 
@@ -1133,6 +1133,14 @@ PrefabInstance:
     - target: {fileID: 2512387470528047719, guid: 48cb3fb68c91eb94999fd99957eb0cae, type: 3}
       propertyPath: m_Name
       value: XR Origin (AR Rig)
+      objectReference: {fileID: 0}
+    - target: {fileID: 2512387470528047719, guid: 48cb3fb68c91eb94999fd99957eb0cae, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2512387470528047737, guid: 48cb3fb68c91eb94999fd99957eb0cae, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2512387470528047737, guid: 48cb3fb68c91eb94999fd99957eb0cae, type: 3}
       propertyPath: m_PlanePrefab
@@ -2110,7 +2118,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &702413257
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3617,9 +3625,9 @@ MonoBehaviour:
   m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 1080, y: 1920}
+  m_ReferenceResolution: {x: 2560, y: 1600}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
+  m_MatchWidthOrHeight: 0.5
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
@@ -4254,23 +4262,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_Version: 4
   m_UsePipelineSettings: 1
   m_AdditionalLightsShadowResolutionTier: 2
+  m_LightLayerMask: 1
+  m_RenderingLayers: 1
   m_CustomShadowLayers: 0
+  m_ShadowLayerMask: 1
+  m_ShadowRenderingLayers: 1
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 0
-  m_RenderingLayersMask:
-    serializedVersion: 0
-    m_Bits: 1
-  m_ShadowRenderingLayersMask:
-    serializedVersion: 0
-    m_Bits: 1
-  m_Version: 4
-  m_LightLayerMask: 1
-  m_ShadowLayerMask: 1
-  m_RenderingLayers: 1
-  m_ShadowRenderingLayers: 1
 --- !u!1 &1082482174
 GameObject:
   m_ObjectHideFlags: 0
@@ -6005,7 +6007,7 @@ MonoBehaviour:
   videoPreview: {fileID: 2083221391}
   mainCamera: {fileID: 152195092}
   jointPrefab: {fileID: 8310224155778166481, guid: 23edcdd4a061c43d2b28c8677dec791f, type: 3}
-  jointScale: 0.03
+  jointScale: 0.02
   bodyColor: {r: 0, g: 1, b: 0, a: 1}
   leftHandColor: {r: 0.2, g: 0.8, b: 1, a: 1}
   rightHandColor: {r: 1, g: 0.6, b: 0.2, a: 1}
@@ -7595,6 +7597,7 @@ GameObject:
   - component: {fileID: 2083221390}
   - component: {fileID: 2083221392}
   - component: {fileID: 2083221391}
+  - component: {fileID: 2083221393}
   m_Layer: 0
   m_Name: Recup_Points
   m_TagString: Untagged
@@ -7617,7 +7620,7 @@ RectTransform:
   m_Father: {fileID: 964111343}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -7633,17 +7636,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bef64abf2643543a39a3c8decd7bbbad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UDPReceiver
-  pythonExePath: /Users/tomroyer/Desktop/Eseo/I3/S9/UNITY/Projet/Anatomie/.venv/bin/python3.11
-  pythonScriptPath: /Users/tomroyer/Desktop/Eseo/I3/S9/UNITY/Projet/Anatomie/Yolo.py
-  host: 127.0.0.1
+  host: 10.21.23.141
   port: 5053
-  targetWidth: 640
-  targetHeight: 480
+  targetWidth: 2560
+  targetHeight: 1600
   jpegQuality: 70
   sendFps: 30
   forceHorizontalMirror: 0
-  debugLogs: 1
-  lastPointCount: 0
   latestBody3D: []
   latestHands3D:
     left: []
@@ -7683,6 +7682,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2083221388}
   m_CullTransparentMesh: 1
+--- !u!114 &2083221393
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2083221388}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86710e43de46f6f4bac7c8e50813a599, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_AspectMode: 4
+  m_AspectRatio: 1.6
 --- !u!1 &2086985258
 GameObject:
   m_ObjectHideFlags: 0
