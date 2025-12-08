@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Video; // Nécessaire pour la vidéo
 using System;
 using System.IO;
 using System.Net.Sockets;
@@ -10,20 +11,22 @@ using Debug = UnityEngine.Debug;
 [RequireComponent(typeof(RawImage))]
 public class Recuperation_Points_yolo : MonoBehaviour
 {
+    [Header("Mode Test")]
+    public bool useVideoFile = true; // COCHEZ CA POUR TESTER AVEC LA VIDEO
+    public VideoPlayer videoPlayer;  // Glissez le composant Video Player ici
+    public RenderTexture videoTexture; // Glissez la Render Texture "VideoOutput" ici
     [Header("Configuration Réseau")]
-    // METTEZ L'IP DE VOTRE PC ICI DANS L'INSPECTEUR UNITY
-    public string host = "10.21.23.141";
+    public string host = "10.21.23.164"; // Remettez 127.0.0.1 pour tester sur le PC !
     public int port = 5053;
 
     [Header("Camera Capture")]
     public int targetWidth = 2560;
     public int targetHeight = 1600;
-    [Range(1, 100)] public int jpegQuality = 60; // Baissé un peu pour le WiFi
-    public float sendFps = 15f;
+    [Range(1, 100)] public int jpegQuality = 75;
+    public float sendFps = 20f; // Un peu plus fluide pour la vidéo
 
-    // --- Options Miroir ---
     [Header("Options Miroir")]
-    public bool forceHorizontalMirror = false; // Mettre à TRUE pour la caméra frontale (selfie)
+    public bool forceHorizontalMirror = false;
 
     // --- Interne ---
     private RenderTexture rt;
@@ -34,7 +37,6 @@ public class Recuperation_Points_yolo : MonoBehaviour
 
     private Thread netThread;
     private volatile bool running;
-
     private readonly object frameLock = new object();
     private byte[] nextFrameJpg = null;
 
@@ -52,28 +54,34 @@ public class Recuperation_Points_yolo : MonoBehaviour
 
     void Start()
     {
-        // 1. Démarrer la caméra
         preview = GetComponent<RawImage>();
-
-        // Sur Android, on essaie de prendre la caméra arrière par défaut
-        WebCamDevice[] devices = WebCamTexture.devices;
-        string camName = "";
-        foreach(var d in devices) {
-            if (!d.isFrontFacing) { // Préférez la caméra arrière (Back Facing)
-                camName = d.name;
-                break;
-            }
-        }
-
-        if (string.IsNullOrEmpty(camName) && devices.Length > 0) camName = devices[0].name;
-
-        webcam = new WebCamTexture(camName, targetWidth, targetHeight);
-        preview.texture = webcam;
-        webcam.Play();
-
         captureTex = new Texture2D(2, 2, TextureFormat.RGB24, false);
 
-        // 2. Lancer les threads
+        if (useVideoFile)
+        {
+            // MODE VIDEO
+            if (videoPlayer != null && videoTexture != null)
+            {
+                preview.texture = videoTexture; // On affiche la vidéo sur l'écran
+                videoPlayer.Play();
+                Debug.Log("🎬 Mode Vidéo Activé");
+            }
+            else
+            {
+                Debug.LogError("Mode Vidéo activé mais VideoPlayer ou RenderTexture manquant !");
+            }
+        }
+        else
+        {
+            // MODE WEBCAM (Classique)
+            WebCamDevice[] devices = WebCamTexture.devices;
+            string camName = (devices.Length > 0) ? devices[0].name : "";
+            webcam = new WebCamTexture(camName, targetWidth, targetHeight);
+            preview.texture = webcam;
+            webcam.Play();
+        }
+
+        // Démarrage Threads
         running = true;
         StartCoroutine(CaptureLoop());
         netThread = new Thread(NetLoop) { IsBackground = true };
@@ -85,7 +93,6 @@ public class Recuperation_Points_yolo : MonoBehaviour
         running = false;
         try { netThread?.Join(300); } catch {}
         if (webcam != null && webcam.isPlaying) webcam.Stop();
-
         if (rt != null) { rt.Release(); Destroy(rt); }
     }
 
@@ -97,51 +104,59 @@ public class Recuperation_Points_yolo : MonoBehaviour
         while (running)
         {
             yield return new WaitForEndOfFrame();
-            if (webcam == null || !webcam.isPlaying || webcam.width < 16) continue;
             if (Time.unscaledTime < nextSend) continue;
 
-            if (rt == null || rtW != webcam.width || rtH != webcam.height)
+            Texture sourceTexture = null;
+
+            if (useVideoFile)
             {
-                if (rt != null) rt.Release();
-                rtW = webcam.width; rtH = webcam.height;
-                rt = new RenderTexture(rtW, rtH, 0, RenderTextureFormat.ARGB32);
-                rt.Create();
-                captureTex = new Texture2D(rtW, rtH, TextureFormat.RGB24, false);
+                // Source = La Render Texture de la vidéo
+                if (videoTexture != null && videoTexture.IsCreated()) sourceTexture = videoTexture;
+            }
+            else
+            {
+                // Source = La Webcam
+                if (webcam != null && webcam.isPlaying && webcam.width > 16) sourceTexture = webcam;
             }
 
-            Graphics.Blit(webcam, rt);
+            if (sourceTexture == null) continue;
+
+            // Encodage JPG
+            // On utilise un RenderTexture temporaire pour lire les pixels
+            RenderTexture currentRT = RenderTexture.GetTemporary(sourceTexture.width, sourceTexture.height, 0, RenderTextureFormat.ARGB32);
+            Graphics.Blit(sourceTexture, currentRT);
+
             var prev = RenderTexture.active;
-            RenderTexture.active = rt;
-            captureTex.ReadPixels(new Rect(0, 0, rtW, rtH), 0, 0);
+            RenderTexture.active = currentRT;
+
+            if (captureTex.width != currentRT.width || captureTex.height != currentRT.height)
+                captureTex = new Texture2D(currentRT.width, currentRT.height, TextureFormat.RGB24, false);
+
+            captureTex.ReadPixels(new Rect(0, 0, currentRT.width, currentRT.height), 0, 0);
             captureTex.Apply(false);
+
             RenderTexture.active = prev;
+            RenderTexture.ReleaseTemporary(currentRT);
 
             byte[] jpg = captureTex.EncodeToJPG(jpegQuality);
             lock (frameLock) { nextFrameJpg = jpg; }
+
             nextSend = Time.unscaledTime + interval;
         }
     }
 
-    void Update() { ApplyPreviewOrientation(); }
+    void Update()
+    {
+        if (!useVideoFile) ApplyPreviewOrientation();
+    }
+
 
     void ApplyPreviewOrientation()
     {
         if (webcam == null || !webcam.isPlaying) return;
-        // Sur Android, la rotation est souvent nécessaire
         preview.rectTransform.localEulerAngles = new Vector3(0, 0, -webcam.videoRotationAngle);
-
-        // Ajustement du flip
-        Rect uv = preview.uvRect;
-        bool vMirrored = webcam.videoVerticallyMirrored;
-
-        // Logique de flip adaptée pour mobile
-        float yMin = vMirrored ? 1 : 0;
-        float yH = vMirrored ? -1 : 1;
-
-        if (forceHorizontalMirror) uv = new Rect(1, yMin, -1, yH);
-        else uv = new Rect(0, yMin, 1, yH);
-
-        preview.uvRect = uv;
+        preview.uvRect = webcam.videoVerticallyMirrored ? new Rect(0, 1, 1, -1) : new Rect(0, 0, 1, 1);
+        if (forceHorizontalMirror) preview.uvRect = new Rect(1, preview.uvRect.y, -1, preview.uvRect.height);
     }
 
     void NetLoop()
@@ -151,21 +166,16 @@ public class Recuperation_Points_yolo : MonoBehaviour
             TcpClient client = null;
             try
             {
-                // Connexion au PC
+                // Connexion Standard
                 client = new TcpClient();
                 var result = client.BeginConnect(host, port, null, null);
-                bool success = result.AsyncWaitHandle.WaitOne(2000); // Timeout 2s
+                bool success = result.AsyncWaitHandle.WaitOne(1000);
 
                 if (!success || !client.Connected) {
-                    Debug.LogWarning($"[TCP] Impossible de se connecter à {host}:{port}");
-                    client.Close();
-                    Thread.Sleep(1000);
-                    continue;
+                    client.Close(); Thread.Sleep(1000); continue;
                 }
-
                 client.EndConnect(result);
                 client.NoDelay = true;
-                Debug.Log($"✅ Connecté au PC ({host}) !");
 
                 using (client)
                 using (var stream = client.GetStream())
@@ -179,11 +189,9 @@ public class Recuperation_Points_yolo : MonoBehaviour
 
                         if (jpgToSend == null) { Thread.Sleep(5); continue; }
 
-                        // Envoi
                         bw.Write(System.Net.IPAddress.HostToNetworkOrder(jpgToSend.Length));
                         bw.Write(jpgToSend);
 
-                        // Réception
                         int jsonSize = ReadInt32BE(br);
                         byte[] jsonBytes = ReadExact(br, jsonSize);
                         string json = System.Text.Encoding.UTF8.GetString(jsonBytes);
@@ -198,10 +206,7 @@ public class Recuperation_Points_yolo : MonoBehaviour
                     }
                 }
             }
-            catch (Exception)
-            {
-                Thread.Sleep(500);
-            }
+            catch (Exception) { Thread.Sleep(500); }
         }
     }
 
