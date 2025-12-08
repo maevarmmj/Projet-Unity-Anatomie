@@ -4090,6 +4090,10 @@ MonoBehaviour:
   client: {fileID: 2083221390}
   confidenceThreshold: 0
   smoothing: 0.5
+  autoScaleToPerson: 1
+  scaleSmoothing: 0.8
+  rigRoot: {fileID: 1855347215}
+  depthBias: 0.15
   videoPreview: {fileID: 2083221391}
   mainCamera: {fileID: 152195092}
   depthScale: 0.5
@@ -6098,7 +6102,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1465681964}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2458f9b4d2db74e9caf0148bc486001a, type: 3}
   m_Name: 
@@ -6732,6 +6736,11 @@ Transform:
 --- !u!4 &1855347214 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6711915675244140516, guid: b4ef079368c2540a2aedbf035bcfa19f, type: 3}
+  m_PrefabInstance: {fileID: 1855347211}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1855347215 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5311683950588060130, guid: b4ef079368c2540a2aedbf035bcfa19f, type: 3}
   m_PrefabInstance: {fileID: 1855347211}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &1855347216 stripped

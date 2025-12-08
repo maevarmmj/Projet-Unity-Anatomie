@@ -8,6 +8,19 @@ public class AnatomyRotator : MonoBehaviour
     public float confidenceThreshold = 0.5f;
     [Range(0, 1)] public float smoothing = 0.7f;
 
+    [Header("Calibration taille")]
+    public bool autoScaleToPerson = true;
+    [Range(0f, 1f)] public float scaleSmoothing = 0.8f;
+    // Racine du rig à scaler (si null, on prend ce GameObject)
+    public Transform rigRoot;
+
+    private float initialRigTorsoLength = 1f;
+    private float currentScale = 1f;
+
+    [Header("Décalage profondeur")]
+    [Tooltip("Décale tout le squelette vers la caméra pour qu'il soit légèrement devant la personne.")]
+    public float depthBias = 0.1f;  // 0.1 = un peu devant
+
     [Header("Réglages Monde")]
     public UnityEngine.UI.RawImage videoPreview;
     public Camera mainCamera;
@@ -41,7 +54,24 @@ public class AnatomyRotator : MonoBehaviour
     void Start()
     {
         if (videoPreview != null) videoRect = videoPreview.rectTransform;
+
+        // --- Init racine du rig ---
+        if (rigRoot == null)
+            rigRoot = this.transform; // On suppose que le script est sur le root du squelette
+
+        // --- Longueur de torse de référence du modèle (bind pose) ---
+        if (hipsBone != null && chestBone != null)
+        {
+            initialRigTorsoLength = Vector3.Distance(hipsBone.position, chestBone.position);
+        }
+        else
+        {
+            initialRigTorsoLength = 1f;
+        }
+
+        currentScale = rigRoot.localScale.x;
     }
+
 
     void Update()
     {
@@ -54,12 +84,63 @@ public class AnatomyRotator : MonoBehaviour
         // 2. GÉRER LE THORAX (Relativement au bassin)
         UpdateChest();
 
-        // 3. ROTATION DES MEMBRES
+        // 3. SCALE GLOBAL EN FONCTION DE LA PERSONNE
+        if (autoScaleToPerson)
+        {
+            UpdateScaleFromPerson();
+        }
+
+        // 4. ROTATION DES MEMBRES
         foreach (var link in bonesToRotate)
         {
             RotateBone(link);
         }
+
     }
+
+    void UpdateScaleFromPerson()
+    {
+        if (initialRigTorsoLength <= 0.0001f) return;
+        if (client.latestBody3D == null || client.latestBody3D.Length < 25) return;
+
+        // Hanches : indices 23 (gauche) & 24 (droite) MediaPipe
+        var pLeftHip = client.latestBody3D[23];
+        var pRightHip = client.latestBody3D[24];
+
+        if (pLeftHip.c < confidenceThreshold || pRightHip.c < confidenceThreshold) return;
+
+        // Milieu des hanches
+        Recuperation_Points_yolo.Point3D midHip = new Recuperation_Points_yolo.Point3D();
+        midHip.x = (pLeftHip.x + pRightHip.x) * 0.5f;
+        midHip.y = (pLeftHip.y + pRightHip.y) * 0.5f;
+        midHip.z = (pLeftHip.z + pRightHip.z) * 0.5f;
+
+        // Épaules : indices 11 (gauche) & 12 (droite) MediaPipe
+        var pLeftSh = client.latestBody3D[11];
+        var pRightSh = client.latestBody3D[12];
+        if (pLeftSh.c < confidenceThreshold || pRightSh.c < confidenceThreshold) return;
+
+        Recuperation_Points_yolo.Point3D midSh = new Recuperation_Points_yolo.Point3D();
+        midSh.x = (pLeftSh.x + pRightSh.x) * 0.5f;
+        midSh.y = (pLeftSh.y + pRightSh.y) * 0.5f;
+        midSh.z = (pLeftSh.z + pRightSh.z) * 0.5f;
+
+        // Positions monde de la personne, sur ton plan vidéo + profondeur
+        Vector3 hipWorld = ComputeWorldPos(midHip);
+        Vector3 shWorld  = ComputeWorldPos(midSh);
+    
+        float personTorsoLength = Vector3.Distance(hipWorld, shWorld);
+        if (personTorsoLength <= 0.0001f) return;
+
+        // Facteur de scale souhaité
+        float targetScale = personTorsoLength / initialRigTorsoLength;
+
+        // Lissage pour éviter que ça pompe
+        currentScale = Mathf.Lerp(currentScale, targetScale, 1f - scaleSmoothing);
+
+        rigRoot.localScale = Vector3.one * currentScale;
+    }
+
 
     void UpdateHips()
     {
@@ -165,15 +246,16 @@ public class AnatomyRotator : MonoBehaviour
         Vector3 posBottom = Vector3.Lerp(videoCorners[0], videoCorners[3], p.x);
         Vector3 posOnPlane = Vector3.Lerp(posTop, posBottom, p.y);
 
-        // Direction "vers la scène"
         Vector3 depthDir = -mainCamera.transform.forward;
 
-        // ⚠️ MediaPipe : plus le point est proche de la caméra, plus z est NÉGATIF.
-        // On inverse donc le signe pour Unity.
+        // MediaPipe : plus proche caméra => z négatif, on inverse
         float zVal = -p.z;
 
-        Vector3 safetyOffset = depthDir * 0.5f;
+        // Décalage global vers la caméra pour que le squelette ne soit pas "dans" la personne
+        Vector3 safetyOffset = depthDir * depthBias;
+
         return posOnPlane + (depthDir * zVal * depthScale) + safetyOffset;
     }
+
 
 }
