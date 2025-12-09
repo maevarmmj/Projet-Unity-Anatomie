@@ -4,7 +4,6 @@
 TagManager:
   serializedVersion: 3
   tags:
-  - jambe
   - coeur
   - estomac
   - pancreas
@@ -13,7 +12,6 @@ TagManager:
   - Foie
   - Diaphragm
   - Rein
-  - bras
   - UI_Interactable
   layers:
   - Default

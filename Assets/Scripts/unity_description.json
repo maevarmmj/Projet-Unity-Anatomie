@@ -1,0 +1,113 @@
+{
+  "HumanBrain": {
+    "nom": "Cerveau",
+    "description": "Le cerveau contrôle tout ce que tu fais : penser, bouger, sentir et même rêver.",
+    "fun_fact": "Il contient plus de neurones qu’il y a d'étoiles dans la Voie lactée !"
+  },
+
+  "HumanHeart": {
+    "nom": "Cœur",
+    "description": "Le cœur pompe le sang dans tout ton corps pour transporter l’oxygène.",
+    "fun_fact": "Il bat environ 100 000 fois par jour !"
+  },
+
+  "Lungs": {
+    "nom": "Poumons",
+    "description": "Les poumons te permettent de respirer et d’envoyer l’oxygène dans ton sang.",
+    "fun_fact": "Tu respires environ 20 000 fois chaque jour."
+  },
+
+  "HumanDiaphragm": {
+    "nom": "Diaphragme",
+    "description": "Le diaphragme est un muscle qui t’aide à respirer.",
+    "fun_fact": "C’est lui qui est responsable du hoquet !"
+  },
+
+  "HumanLiver": {
+    "nom": "Foie",
+    "description": "Le foie nettoie ton sang et transforme les aliments en énergie.",
+    "fun_fact": "Il peut repousser partiellement s’il est endommagé."
+  },
+
+  "Stomach": {
+    "nom": "Estomac",
+    "description": "L’estomac transforme les aliments pour faciliter la digestion.",
+    "fun_fact": "Son acide est si fort qu’il peut dissoudre du métal."
+  },
+
+  "Intestine": {
+    "nom": "Intestins",
+    "description": "Les intestins absorbent les nutriments des aliments digérés.",
+    "fun_fact": "Ils mesurent environ 7 mètres de long !"
+  },
+
+  "Pancreas": {
+    "nom": "Pancréas",
+    "description": "Le pancréas aide ton corps à utiliser le sucre et à digérer.",
+    "fun_fact": "Il fabrique plusieurs enzymes essentielles à la digestion."
+  },
+
+  "HumanKidney": {
+    "nom": "Rein",
+    "description": "Les reins filtrent ton sang et nettoient ton corps.",
+    "fun_fact": "Ils filtrent environ 180 litres de sang par jour !"
+  },
+
+  "DEF-upper_arm.L": {
+    "nom": "Haut du bras gauche",
+    "description": "C'est l'os du bras qui relie l'épaule au coude.",
+    "fun_fact": "Il s'appelle l'humérus, comme le mot 'humour' !"
+  },
+
+  "DEF-forearm.L": {
+    "nom": "Avant-bras gauche",
+    "description": "Il te permet de tourner la main et de la plier.",
+    "fun_fact": "Il contient deux os : le radius et l’ulna."
+  },
+
+  "DEF-hand.L": {
+    "nom": "Main gauche",
+    "description": "La main te permet d’attraper, toucher et sentir les objets.",
+    "fun_fact": "Ta main compte 27 os !"
+  },
+  "DEF-thigh.L": {
+    "nom": "Cuisse gauche",
+    "description": "L’os de la cuisse supporte ton poids quand tu marches.",
+    "fun_fact": "C’est l’os le plus long du corps : le fémur !"
+  },
+
+  "DEF-shin.L": {
+    "nom": "Tibia gauche",
+    "description": "Cet os soutient la jambe et t’aide à marcher.",
+    "fun_fact": "C’est l’un des os les plus faciles à toucher sous la peau."
+  },
+
+  "DEF-foot.L": {
+    "nom": "Pied gauche",
+    "description": "Le pied te permet de marcher, courir et garder ton équilibre.",
+    "fun_fact": "Il contient 26 os !"
+  },
+
+  "DEF-thigh.R": {
+    "nom": "Cuisse droite",
+    "description": "Même rôle que la cuisse gauche : soutenir ton corps.",
+    "fun_fact": "Le fémur peut supporter des tonnes de pression !"
+  },
+  "DEF-thigh.R": {
+    "nom": "Cuisse droit",
+    "description": "L’os de la cuisse supporte ton poids quand tu marches.",
+    "fun_fact": "C’est l’os le plus long du corps : le fémur !"
+  },
+
+  "DEF-shin.R": {
+    "nom": "Tibia droit",
+    "description": "Cet os soutient la jambe et t’aide à marcher.",
+    "fun_fact": "C’est l’un des os les plus faciles à toucher sous la peau."
+  },
+  "DEF-spin.004": {
+    "nom": "Cou et crâne",
+    "description": "Cette partie soutient ta tête, protège ton cerveau et permet à ton cou de bouger.",
+    "fun_fact": "Le crâne est composé de plusieurs os soudés, tandis que le cou contient de petites vertèbres très mobiles."
+  }
+
+}
