@@ -78,9 +78,24 @@ public class DescriptionModeController : MonoBehaviour
         RectTransform canvasRect = canvas.transform as RectTransform;
         RectTransform boxRect    = instance.GetComponent<RectTransform>();
 
+        // ===== NOUVEAU : déterminer d’abord si on est à gauche ou droite du CANVAS =====
+        bool clickOnRight = false;
+
+        if (canvasRect != null)
+        {
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                canvasRect,
+                screenPos,
+                canvas.worldCamera,
+                out Vector2 localSidePos
+            );
+
+            clickOnRight = localSidePos.x >= 0f;
+        }
+
+        // ===== Positionnement de la bulle =====
         if (canvasRect != null && boxRect != null)
         {
-            // IMPORTANT : forcer le layout pour avoir la vraie taille de la bulle
             LayoutRebuilder.ForceRebuildLayoutImmediate(boxRect);
 
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
@@ -90,7 +105,6 @@ public class DescriptionModeController : MonoBehaviour
                 out Vector2 localPos
             );
 
-            // clamp pour ne pas sortir de l'écran
             Vector2 canvasSize = canvasRect.rect.size;
             Vector2 boxSize    = boxRect.rect.size;
             Vector2 halfCanvas = canvasSize * 0.5f;
@@ -101,42 +115,34 @@ public class DescriptionModeController : MonoBehaviour
             float maxX =  halfCanvas.x - halfBox.x - margin;
 
             float minY = -halfCanvas.y + halfBox.y + margin;
-            float maxY =  halfCanvas.y - halfBox.y - margin; // <- le signe ici
+            float maxY =  halfCanvas.y - halfBox.y - margin;
 
             Vector2 clampedPos = new Vector2(
                 Mathf.Clamp(localPos.x, minX, maxX),
                 Mathf.Clamp(localPos.y, minY, maxY)
             );
 
+            // ===== Offset gauche/droite =====
+            float sideOffset = canvasRect.rect.width * 0.20f;
+
+            if (clickOnRight)
+                clampedPos.x += sideOffset;  // bulle décalée à droite
+            else
+                clampedPos.x -= sideOffset;  // bulle décalée à gauche
+
             boxRect.anchoredPosition = clampedPos;
         }
 
+        // ===== Appliquer le contenu & le flip =====
         var ui = instance.GetComponent<InfoBoxUI>();
         if (ui != null)
         {
             ui.SetContent(info.nom, info.description, info.fun_fact);
-
-            // On détermine le côté dans le REPÈRE DU CANVAS, pas avec Screen.width
-            bool clickOnRight = false;
-
-            if (canvasRect != null)
-            {
-                RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                    canvasRect,
-                    screenPos,
-                    canvas.worldCamera,
-                    out Vector2 localPosForSide
-                );
-
-                // Au centre du Canvas, x = 0
-                clickOnRight = localPosForSide.x >= 0f;
-            }
-
             ui.SetPointerSide(clickOnRight);
         }
-
 
         if (autoCloseDelay > 0f)
             Destroy(instance, autoCloseDelay);
     }
+
 }
