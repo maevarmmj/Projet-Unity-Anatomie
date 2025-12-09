@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1923899703088415644}
   - component: {fileID: 7483374517181004159}
   m_Layer: 0
-  m_Name: Infobox UI
+  m_Name: InfoBox UI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -30,13 +30,16 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1494181638522145568}
+  - {fileID: 2641152149306137497}
+  - {fileID: 8453664236477749828}
+  - {fileID: 1804561602049451689}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 875.1401, y: 181.64001}
-  m_SizeDelta: {x: -1862, y: -956}
-  m_Pivot: {x: 0.03, y: 0.31}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 800, y: 700}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &7483374517181004159
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -52,6 +55,9 @@ MonoBehaviour:
   titleText: {fileID: 7789112548673816721}
   descriptionText: {fileID: 6003173915833848521}
   funFactText: {fileID: 8633272927747385666}
+  backgroundImage: {fileID: 3620592433121749341}
+  bubbleRightSprite: {fileID: 21300000, guid: 3a488a4c51d1359479a8a7ffd17fc904, type: 3}
+  bubbleLeftSprite: {fileID: 21300000, guid: 3a488a4c51d1359479a8a7ffd17fc904, type: 3}
 --- !u!1 &2226682213863542150
 GameObject:
   m_ObjectHideFlags: 0
@@ -82,11 +88,11 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1494181638522145568}
+  m_Father: {fileID: 1923899703088415644}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -160}
+  m_AnchoredPosition: {x: 0, y: -284}
   m_SizeDelta: {x: 500, y: 70}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &4752870715734006654
@@ -182,7 +188,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 52.678925, y: -61.642365, z: 47.41205, w: 70.505684}
+  m_margin: {x: -7.723358, y: -61.642365, z: -13.888794, w: 82.207985}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -198,9 +204,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1494181638522145568}
   - component: {fileID: 1757605342804039831}
-  - component: {fileID: 3913760963087383101}
+  - component: {fileID: 3620592433121749341}
   m_Layer: 0
-  m_Name: InfoBox
+  m_Name: backgroundImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -217,16 +223,13 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
-  m_Children:
-  - {fileID: 2641152149306137497}
-  - {fileID: 8453664236477749828}
-  - {fileID: 1804561602049451689}
+  m_Children: []
   m_Father: {fileID: 1923899703088415644}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 85.149994, y: 29.299988}
-  m_SizeDelta: {x: 600, y: 500}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 800, y: 700}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1757605342804039831
 CanvasRenderer:
@@ -236,7 +239,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3009076748203193263}
   m_CullTransparentMesh: 1
---- !u!114 &3913760963087383101
+--- !u!114 &3620592433121749341
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -245,24 +248,27 @@ MonoBehaviour:
   m_GameObject: {fileID: 3009076748203193263}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1344c3c82d62a2a41a3576d8abb8e3ea, type: 3}
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.RawImage
+  m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.6862745}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 2800000, guid: 3a488a4c51d1359479a8a7ffd17fc904, type: 3}
-  m_UVRect:
-    serializedVersion: 2
-    x: 0
-    y: 0
-    width: 1
-    height: 1
+  m_Sprite: {fileID: 21300000, guid: 3a488a4c51d1359479a8a7ffd17fc904, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 1
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &3717570412033478584
 GameObject:
   m_ObjectHideFlags: 0
@@ -293,11 +299,11 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1494181638522145568}
+  m_Father: {fileID: 1923899703088415644}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 50}
+  m_AnchoredPosition: {x: 0, y: 11}
   m_SizeDelta: {x: 520, y: 250}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &7027297846205777519
@@ -355,8 +361,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 28
-  m_fontSizeBase: 28
+  m_fontSize: 32
+  m_fontSizeBase: 32
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -393,7 +399,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 58.940735, y: -61.642365, z: 42.72473, w: 151.38431}
+  m_margin: {x: -70.80835, y: -61.642365, z: -36.077454, w: 180.78354}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -429,11 +435,11 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1494181638522145568}
+  m_Father: {fileID: 1923899703088415644}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: 40}
+  m_AnchoredPosition: {x: 0, y: 175}
   m_SizeDelta: {x: 520, y: 120}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!222 &3338713397053919395
@@ -529,7 +535,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 19.78653, y: -21.70285, z: 44.366028, w: 64.934296}
+  m_margin: {x: -54.669556, y: 9.621948, z: -35.845154, w: 64.934296}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0

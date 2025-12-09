@@ -93,21 +93,35 @@
     "description": "Même rôle que la cuisse gauche : soutenir ton corps.",
     "fun_fact": "Le fémur peut supporter des tonnes de pression !"
   },
-  "DEF-thigh.R": {
-    "nom": "Cuisse droit",
-    "description": "L’os de la cuisse supporte ton poids quand tu marches.",
-    "fun_fact": "C’est l’os le plus long du corps : le fémur !"
-  },
 
   "DEF-shin.R": {
     "nom": "Tibia droit",
     "description": "Cet os soutient la jambe et t’aide à marcher.",
     "fun_fact": "C’est l’un des os les plus faciles à toucher sous la peau."
   },
-  "DEF-spin.004": {
+
+  "DEF-spine.004": {
     "nom": "Cou et crâne",
     "description": "Cette partie soutient ta tête, protège ton cerveau et permet à ton cou de bouger.",
     "fun_fact": "Le crâne est composé de plusieurs os soudés, tandis que le cou contient de petites vertèbres très mobiles."
+  },
+
+  "DEF-upper_arm.R": {
+    "nom": "Haut du bras droit",
+    "description": "C'est l'os du bras qui relie l'épaule au coude.",
+    "fun_fact": "Il s'appelle l'humérus, comme le mot 'humour' !"
+  },
+
+  "DEF-forearm.R": {
+    "nom": "Avant-bras droit",
+    "description": "Il te permet de tourner la main et de la plier.",
+    "fun_fact": "Il contient deux os : le radius et l’ulna."
+  },
+
+  "DEF-hand.R": {
+    "nom": "Main droit",
+    "description": "La main te permet d’attraper, toucher et sentir les objets.",
+    "fun_fact": "Ta main compte 27 os !"
   }
 
 }

@@ -7051,7 +7051,7 @@ MonoBehaviour:
   descriptionModeActive: 0
   mainCamera: {fileID: 152195092}
   canvas: {fileID: 964111342}
-  infoBoxPrefab: {fileID: 2121414422507921850, guid: 2df3dd0d5f70f4c4c8c5cfa259aed871, type: 3}
+  infoBoxPrefab: {fileID: 2121414422507921850, guid: 5a77b09ba7148408dbf9e8679149d20f, type: 3}
   autoCloseDelay: 4
 --- !u!1 &1465681964
 GameObject:
@@ -9051,7 +9051,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UDPReceiver
   useVideoFile: 0
   videoPlayer: {fileID: 2083221394}
-  videoTexture: {fileID: 8400000, guid: 766abfe504c3c4505a5c8aab62f62c11, type: 2}
+  videoTexture: {fileID: 8400000, guid: 72b52766fa2994d878b52129ae1d14d7, type: 2}
   host: 10.21.23.164
   port: 5053
   targetWidth: 2560
@@ -9120,11 +9120,11 @@ VideoPlayer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2083221388}
   m_Enabled: 1
-  m_VideoClip: {fileID: 32900000, guid: db934eef72eb7483788464012443da19, type: 3}
+  m_VideoClip: {fileID: 32900000, guid: faecee5b79ce74ee3b5af88b1f304073, type: 3}
   m_TargetCameraAlpha: 1
   m_TargetCamera3DLayout: 0
   m_TargetCamera: {fileID: 0}
-  m_TargetTexture: {fileID: 8400000, guid: 766abfe504c3c4505a5c8aab62f62c11, type: 2}
+  m_TargetTexture: {fileID: 8400000, guid: 72b52766fa2994d878b52129ae1d14d7, type: 2}
   m_TimeReference: 0
   m_TargetMaterialRenderer: {fileID: 0}
   m_TargetMaterialProperty: <noninit>
@@ -9134,14 +9134,12 @@ VideoPlayer:
   m_TimeUpdateMode: 2
   m_PlaybackSpeed: 1
   m_AudioOutputMode: 2
-  m_TargetAudioSources:
-  - {fileID: 0}
-  m_DirectAudioVolumes:
-  - 1
+  m_TargetAudioSources: []
+  m_DirectAudioVolumes: []
   m_Url: 
-  m_EnabledAudioTracks: 01
-  m_DirectAudioMutes: 00
-  m_ControlledAudioTrackCount: 1
+  m_EnabledAudioTracks: 
+  m_DirectAudioMutes: 
+  m_ControlledAudioTrackCount: 0
   m_PlayOnAwake: 1
   m_SkipOnDrop: 1
   m_Looping: 1

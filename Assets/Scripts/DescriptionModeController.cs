@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class DescriptionModeController : MonoBehaviour
 {
@@ -9,7 +10,7 @@ public class DescriptionModeController : MonoBehaviour
     public bool descriptionModeActive = false;
     public Camera mainCamera;
     public Canvas canvas;
-    public GameObject infoBoxPrefab;   // le prefab Infobox de ton ami
+    public GameObject infoBoxPrefab;   // le prefab Infobox
     public float autoCloseDelay = 4f;
 
     void Awake()
@@ -25,46 +26,26 @@ public class DescriptionModeController : MonoBehaviour
     void Update()
     {
         if (!descriptionModeActive) return;
+        if (mainCamera == null || canvas == null || infoBoxPrefab == null) return;
 
-        // On récupère une position d'écran selon le device actif (souris ou tactile)
         Vector2 screenPos;
-        bool hasClick = false;
 
-        // Tactile (Android, tablette)
+        // --- TACTILE ---
         if (Touchscreen.current != null)
         {
             var touch = Touchscreen.current.primaryTouch;
-            if (touch.press.wasPressedThisFrame)
-            {
-                screenPos = touch.position.ReadValue();
-                hasClick = true;
-            }
-            else
-            {
-                return; // pas de tap ce frame
-            }
+            if (!touch.press.wasPressedThisFrame) return;
+            screenPos = touch.position.ReadValue();
         }
-        // Souris (PC, éditeur)
+        // --- SOURIS (PC / Éditeur) ---
         else if (Mouse.current != null)
         {
-            if (Mouse.current.leftButton.wasPressedThisFrame)
-            {
-                screenPos = Mouse.current.position.ReadValue();
-                hasClick = true;
-            }
-            else
-            {
-                return; // pas de clic ce frame
-            }
+            if (!Mouse.current.leftButton.wasPressedThisFrame) return;
+            screenPos = Mouse.current.position.ReadValue();
         }
-        else
-        {
-            return; // aucun device d'input dispo
-        }
+        else return;
 
-        if (!hasClick) return;
-
-        // Raycast 3D depuis la position écran
+        // Raycast dans la scène pour vérifier qu'on a bien touché un BodyPartClickable
         Ray ray = mainCamera.ScreenPointToRay(screenPos);
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
@@ -76,16 +57,13 @@ public class DescriptionModeController : MonoBehaviour
         }
     }
 
-
-
-
     public void ToggleDescriptionMode()
     {
         descriptionModeActive = !descriptionModeActive;
         Debug.Log("Mode description : " + descriptionModeActive);
     }
 
-    void ShowBodyPartInfo(string id, Vector3 screenPos)
+    void ShowBodyPartInfo(string id, Vector2 screenPos)
     {
         if (BodyPartDescriptionDatabase.Instance == null) return;
 
@@ -98,11 +76,13 @@ public class DescriptionModeController : MonoBehaviour
         GameObject instance = Instantiate(infoBoxPrefab, canvas.transform);
 
         RectTransform canvasRect = canvas.transform as RectTransform;
-        RectTransform boxRect = instance.transform as RectTransform;
+        RectTransform boxRect    = instance.GetComponent<RectTransform>();
 
         if (canvasRect != null && boxRect != null)
         {
-            // 1) Position "théorique" sous le doigt
+            // IMPORTANT : forcer le layout pour avoir la vraie taille de la bulle
+            LayoutRebuilder.ForceRebuildLayoutImmediate(boxRect);
+
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
                 canvasRect,
                 screenPos,
@@ -110,20 +90,18 @@ public class DescriptionModeController : MonoBehaviour
                 out Vector2 localPos
             );
 
-            // 2) Calcul des bornes pour que la box reste DANS le canvas
+            // clamp pour ne pas sortir de l'écran
             Vector2 canvasSize = canvasRect.rect.size;
             Vector2 boxSize    = boxRect.rect.size;
-
             Vector2 halfCanvas = canvasSize * 0.5f;
             Vector2 halfBox    = boxSize * 0.5f;
-
-            // Optionnel : petite marge pour éviter que ça touche le bord
-            float margin = 10f;
+            float margin       = 10f;
 
             float minX = -halfCanvas.x + halfBox.x + margin;
             float maxX =  halfCanvas.x - halfBox.x - margin;
+
             float minY = -halfCanvas.y + halfBox.y + margin;
-            float maxY =  halfCanvas.y - halfBox.y - margin;
+            float maxY =  halfCanvas.y - halfBox.y - margin; // <- le signe ici
 
             Vector2 clampedPos = new Vector2(
                 Mathf.Clamp(localPos.x, minX, maxX),
@@ -137,12 +115,28 @@ public class DescriptionModeController : MonoBehaviour
         if (ui != null)
         {
             ui.SetContent(info.nom, info.description, info.fun_fact);
+
+            // On détermine le côté dans le REPÈRE DU CANVAS, pas avec Screen.width
+            bool clickOnRight = false;
+
+            if (canvasRect != null)
+            {
+                RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                    canvasRect,
+                    screenPos,
+                    canvas.worldCamera,
+                    out Vector2 localPosForSide
+                );
+
+                // Au centre du Canvas, x = 0
+                clickOnRight = localPosForSide.x >= 0f;
+            }
+
+            ui.SetPointerSide(clickOnRight);
         }
+
 
         if (autoCloseDelay > 0f)
             Destroy(instance, autoCloseDelay);
     }
-
-
-
 }
