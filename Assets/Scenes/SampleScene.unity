@@ -1226,9 +1226,6 @@ MonoBehaviour:
   targetIds:
   - Lungs
   - HumanDiaphragm
-  - HumanLiver
-  - Stomach
-  - Intestine
   - HumanKidney
   - DEF-upper_arm.L
   - DEF-forearm.L
@@ -6521,7 +6518,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1304254431
 RectTransform:
   m_ObjectHideFlags: 0
@@ -8733,6 +8730,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6904138042758905785, guid: b4ef079368c2540a2aedbf035bcfa19f, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -10023,7 +10024,7 @@ MonoBehaviour:
   useVideoFile: 0
   videoPlayer: {fileID: 2083221394}
   videoTexture: {fileID: 8400000, guid: 72b52766fa2994d878b52129ae1d14d7, type: 2}
-  host: 10.21.23.121
+  host: 10.21.23.123
   port: 5053
   targetWidth: 2560
   targetHeight: 1600

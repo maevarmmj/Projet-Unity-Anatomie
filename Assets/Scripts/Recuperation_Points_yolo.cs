@@ -16,7 +16,7 @@ public class Recuperation_Points_yolo : MonoBehaviour
     public VideoPlayer videoPlayer;  // Glissez le composant Video Player ici
     public RenderTexture videoTexture; // Glissez la Render Texture "VideoOutput" ici
     [Header("Configuration Réseau")]
-    public string host = "10.21.23.164"; // Remettez 127.0.0.1 pour tester sur le PC !
+    public string host = "10.21.23.123"; // Remettez 127.0.0.1 pour tester sur le PC !
     public int port = 5053;
 
     [Header("Camera Capture")]
